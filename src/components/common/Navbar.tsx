@@ -11,24 +11,31 @@ interface NavbarProps {
 export default function Navbar({ onOpenCMS, onOpenLeasing, onScrollTo, tenantCount }: NavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
   const [isScrolled, setIsScrolled] = useState<boolean>(false);
+  const [isOverDarkSections, setIsOverDarkSections] = useState<boolean>(false);
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
+      // Automatically detect when scrolled past the first section into dark sections
+      const heroThreshold = window.innerHeight * 0.70;
+      setIsOverDarkSections(window.scrollY > heroThreshold);
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   return (
     <header className="fixed top-3 sm:top-5 left-0 right-0 z-50 flex flex-col items-center pointer-events-none px-4 sm:px-6">
       
-      {/* Floating Island Capsule Navbar (Gucci Inspiration with Razor-Sharp Visibility) */}
+      {/* Floating Island Capsule Navbar (Gucci Inspiration with Auto-Adaptive Luminance) */}
       <div 
-        className={`pointer-events-auto w-full max-w-6xl rounded-full bg-white/98 backdrop-blur-3xl border border-black/15 transition-all duration-300 flex items-center justify-between select-none ${
-          isScrolled 
-            ? 'py-2.5 px-5 sm:px-7 shadow-[0_16px_45px_rgba(0,0,0,0.18),0_3px_10px_rgba(0,0,0,0.08)]' 
-            : 'py-3 px-6 sm:px-8 shadow-[0_12px_36px_rgba(0,0,0,0.14),0_2px_6px_rgba(0,0,0,0.05)]'
+        className={`pointer-events-auto w-full max-w-6xl rounded-full transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] flex items-center justify-between select-none ${
+          isOverDarkSections
+            ? 'bg-white border-2 border-white/70 shadow-[0_16px_50px_rgba(0,0,0,0.9),0_0_30px_rgba(255,255,255,0.22)] ring-2 ring-white/40 ring-offset-2 ring-offset-black/50 py-2.5 px-5 sm:px-7'
+            : isScrolled 
+              ? 'bg-white/98 backdrop-blur-3xl border border-black/15 shadow-[0_16px_45px_rgba(0,0,0,0.18),0_3px_10px_rgba(0,0,0,0.08)] py-2.5 px-5 sm:px-7' 
+              : 'bg-white/95 backdrop-blur-2xl border border-black/10 shadow-[0_12px_36px_rgba(0,0,0,0.14),0_2px_6px_rgba(0,0,0,0.05)] py-3 px-6 sm:px-8'
         }`}
       >
         
@@ -113,7 +120,13 @@ export default function Navbar({ onOpenCMS, onOpenLeasing, onScrollTo, tenantCou
 
       {/* Floating Mobile Dropdown Card */}
       {mobileMenuOpen && (
-        <div className="pointer-events-auto lg:hidden w-full max-w-sm mt-2 rounded-3xl bg-white/95 backdrop-blur-2xl border border-black/10 p-5 shadow-2xl animate-scale-up space-y-4">
+        <div 
+          className={`pointer-events-auto lg:hidden w-full max-w-sm mt-2 rounded-3xl p-5 shadow-2xl animate-scale-up space-y-4 transition-all duration-300 ${
+            isOverDarkSections 
+              ? 'bg-white border-2 border-white/80 shadow-[0_20px_60px_rgba(0,0,0,0.9),0_0_30px_rgba(255,255,255,0.2)]'
+              : 'bg-white/95 backdrop-blur-2xl border border-black/10'
+          }`}
+        >
           <div className="flex items-center justify-between pb-3 border-b border-black/[0.08]">
             <div className="text-[9px] font-mono tracking-widest uppercase text-zinc-500">
               The Aranya Promenade
